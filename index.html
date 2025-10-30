@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌿 생태·환경 퀴즈 챌린지 🌍</title>
+<style>
+  * {
+    margin: 0; padding: 0;
+    box-sizing: border-box;
+    font-family: 'Comic Sans MS', 'Orbitron', 'Nanum Gothic', sans-serif;
+  }
+
+  body {
+    height: 100vh;
+    background: radial-gradient(circle at top left, #fef08a, #a7f3d0, #93c5fd, #e9d5ff);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #222;
+    overflow: hidden;
+  }
+
+  .quiz-container {
+    background: rgba(255,255,255,0.8);
+    border: 4px double #ff80bf;
+    border-radius: 20px;
+    padding: 30px 40px;
+    width: 90%;
+    max-width: 600px;
+    text-align: center;
+    box-shadow: 0 0 30px #ffb3d9, 0 0 15px #80eaff;
+  }
+
+  h1 {
+    font-size: 2.3rem;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px #ff66cc;
+  }
+
+  .question {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .option {
+    background: linear-gradient(45deg, #f0abfc, #93c5fd);
+    border: none;
+    padding: 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    color: white;
+    font-weight: bold;
+    transition: transform 0.15s, background 0.3s;
+  }
+
+  .option:hover {
+    transform: scale(1.05);
+    background: linear-gradient(45deg, #f9a8d4, #60a5fa);
+  }
+
+  .hidden { display: none; }
+
+  #next-btn {
+    margin-top: 20px;
+    background: #ff80bf;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-size: 1.2rem;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  #next-btn:hover {
+    background: #f472b6;
+    transform: scale(1.05);
+  }
+
+  #result {
+    font-size: 1.4rem;
+    margin-top: 20px;
+    text-shadow: 1px 1px #ffb3d9;
+  }
+
+  .retro-glow {
+    animation: glow 3s infinite alternate;
+  }
+
+  @keyframes glow {
+    0% { text-shadow: 0 0 5px #ff66cc, 0 0 10px #66ffff; }
+    100% { text-shadow: 0 0 25px #ff80bf, 0 0 30px #80eaff; }
+  }
+</style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h1 class="retro-glow">🌸 생태 & 환경 퀴즈 🌸</h1>
+    <div id="quiz">
+      <div class="question" id="question"></div>
+      <div class="options" id="options"></div>
+      <button id="next-btn" class="hidden">다음 ▶</button>
+    </div>
+    <div id="result" class="hidden"></div>
+  </div>
+
+<script>
+const quizData = [
+  {
+    q: "1️⃣ 지구 온난화의 주된 원인은 무엇일까요?",
+    options: ["산소 증가", "이산화탄소 등 온실가스 증가", "태양 폭발", "빙하 확장"],
+    answer: 1
+  },
+  {
+    q: "2️⃣ 멸종 위기 동물을 보호하기 위한 가장 효과적인 방법은?",
+    options: ["사냥 제한", "야생동물 전시", "동물 수입 증가", "동물원 확대"],
+    answer: 0
+  },
+  {
+    q: "3️⃣ 해양 생태계 오염의 주요 원인은?",
+    options: ["플라스틱 쓰레기", "산소", "모래", "해류"],
+    answer: 0
+  },
+  {
+    q: "4️⃣ 나무가 줄어들면 대기 중 어떤 기체가 증가할까?",
+    options: ["이산화탄소", "산소", "질소", "수증기"],
+    answer: 0
+  },
+  {
+    q: "5️⃣ 재생 에너지에 속하는 것은?",
+    options: ["석탄", "태양광", "석유", "천연가스"],
+    answer: 1
+  },
+  {
+    q: "6️⃣ 생물 다양성이 높은 이유는?",
+    options: ["다양한 서식지와 환경", "인간의 개입", "기온 변화", "도시 개발"],
+    answer: 0
+  },
+  {
+    q: "7️⃣ 다음 중 탄소 배출을 줄이는 행동은?",
+    options: ["대중교통 이용", "자동차 혼자 타기", "에어컨 세게 틀기", "플라스틱 컵 사용"],
+    answer: 0
+  },
+  {
+    q: "8️⃣ 쓰레기를 줄이는 방법으로 옳은 것은?",
+    options: ["분리수거", "하천에 버리기", "태워 없애기", "묻어두기"],
+    answer: 0
+  },
+  {
+    q: "9️⃣ 생태계의 균형이 깨지면 일어나는 일은?",
+    options: ["종 멸종", "산소 증가", "기후 안정", "토양 비옥화"],
+    answer: 0
+  },
+  {
+    q: "🔟 기후 변화를 늦추기 위한 개인의 실천은?",
+    options: ["전기 절약", "불필요한 소비", "나무 베기", "플라스틱 사용 늘리기"],
+    answer: 0
+  }
+];
+
+let current = 0;
+let score = 0;
+
+const questionEl = document.getElementById("question");
+const optionsEl = document.getElementById("options");
+const nextBtn = document.getElementById("next-btn");
+const resultEl = document.getElementById("result");
+
+function loadQuiz() {
+  const q = quizData[current];
+  questionEl.textContent = q.q;
+  optionsEl.innerHTML = "";
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement("button");
+    btn.classList.add("option");
+    btn.textContent = opt;
+    btn.onclick = () => selectOption(i);
+    optionsEl.appendChild(btn);
+  });
+  nextBtn.classList.add("hidden");
+}
+
+function selectOption(i) {
+  const q = quizData[current];
+  const allBtns = document.querySelectorAll(".option");
+  allBtns.forEach(btn => btn.disabled = true);
+
+  if (i === q.answer) {
+    allBtns[i].style.background = "linear-gradient(45deg, #4ade80, #22d3ee)";
+    score++;
+  } else {
+    allBtns[i].style.background = "linear-gradient(45deg, #f87171, #facc15)";
+  }
+  nextBtn.classList.remove("hidden");
+}
+
+nextBtn.onclick = () => {
+  current++;
+  if (current < quizData.length) {
+    loadQuiz();
+  } else {
+    showResult();
+  }
+};
+
+function showResult() {
+  document.getElementById("quiz").classList.add("hidden");
+  resultEl.classList.remove("hidden");
+  resultEl.innerHTML = `🎉 퀴즈 완료! 당신의 점수는 <b>${score}/${quizData.length}</b> 💚<br><br>
+  🌱 환경을 지키는 멋진 지구 수호자예요!`;
+}
+
+loadQuiz();
+</script>
+</body>
+</html>
